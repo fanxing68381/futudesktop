@@ -52,7 +52,7 @@ STOCK_LIST =["600519","601398","600941","601939","601628","601288","300750","600
 
 FUTU_WINDOW_TITLE = "富途牛牛"
 SCREENSHOT_REGION = (0, 0, 3840, 2160)  # (x,y,width,height)
-SAVE_DIR = r"D:\图片\市值300资金历史记录\2025市值A股资金历史记录\2025年03月市值300A股资金历史记录\2025年03月24日市值300A股资金历史记录"  # ← 新增路径定义
+SAVE_DIR = r"E:\图片\市值300资金历史记录\2025市值A股资金历史记录\2025年03月市值300A股资金历史记录\2025年03月31日市值300A股资金历史记录"  # ← 新增路径定义
 
 
 # ========================================
@@ -139,3 +139,10 @@ if __name__ == "__main__":
     z_save_dir = SAVE_DIR.replace("E:", "Z:", 1)
     os.startfile(SAVE_DIR)    # 原始E盘目录
     os.startfile(z_save_dir)  # 新增Z盘目录
+        # 执行C:\Users\Administrator\Desktop目录下的打开网盘.bat命令
+    bat_path = r"C:\Users\Administrator\Desktop\打开网盘.bat"
+    try:
+        os.startfile(bat_path)
+        print(f"成功执行 {bat_path}")
+    except Exception as e:
+        print(f"执行 {bat_path} 时出错: {e}")

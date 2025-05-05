@@ -25,7 +25,7 @@ STOCK_LIST =["688575","600737","600703","600027","300127","300003","600161","600
 
 FUTU_WINDOW_TITLE = "富途牛牛"
 SCREENSHOT_REGION = (0, 0, 3840, 2160)  # (x,y,width,height)
-SAVE_DIR = r"E:\图片\A股资金历史记录\2025A股资金历史记录\2025年03月A股资金历史记录\2025年03月31日A股资金历史记录"  # ← 新增路径定义
+SAVE_DIR = r"E:\图片\A股资金历史记录\2025A股资金历史记录\2025年05月A股资金历史记录\2025年05月06日A股资金历史记录"  # ← 新增路径定义
 
 
 # ========================================
@@ -109,6 +109,6 @@ if __name__ == "__main__":
     pyautogui.PAUSE = 0.5  # 降低操作速率为人类可识别
     capture_stock_screenshots()
  # 新增打开Z盘目录指令（在原有E盘目录基础上修改盘符）
-    z_save_dir = SAVE_DIR.replace("E:", "Z:", 1)
+    #z_save_dir = SAVE_DIR.replace("E:", "Z:", 1)
     os.startfile(SAVE_DIR)    # 原始E盘目录
-    os.startfile(z_save_dir)  # 新增Z盘目录
+    #os.startfile(z_save_dir)  # 新增Z盘目录

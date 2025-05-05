@@ -3,9 +3,9 @@ import time
 import pandas as pd
 import os
 import subprocess
-from openpyxl import load_workbook  # 添加此导入用于调整列宽
+from openpyxl import load_workbook
 
-# 定义股票列表 (保持不变)
+# 定义股票列表
 stock_codes = ["SH.600519","SH.601398","SH.600941","SH.601939","SH.601628","SH.601288",
                "SZ.300750","SH.600036","SH.601988","SH.601857","SH.601318","SZ.002594",
                "SH.600938","SZ.000858","SH.601088","SH.600028","SH.600900","SH.601888",
@@ -25,7 +25,7 @@ stock_codes = ["SH.600519","SH.601398","SH.600941","SH.601939","SH.601628","SH.6
                "SZ.002493","SZ.000792","SH.688111","SH.600018","SZ.300896","SZ.002129",
                "SZ.000625","SZ.000063","SH.601211","SZ.002371","SZ.002812","SH.600025",
                "SZ.000776","SH.600011","SH.603392","SH.601688","SH.600999","SH.601238",
-               "SH.600760","SH.601898","SZ.002049","SH.601985","SH.600837","SH.600893",
+               "SH.600760","SH.601898","SZ.002049","SH.601985",            "SH.600893",
                "SH.600346","SH.600919","SH.601009","SH.601669","SH.601186","SH.600115",
                "SH.688303","SH.600150","SZ.002311","SZ.000166","SH.603993","SZ.001979",
                "SH.601006","SZ.000538","SZ.002027","SH.600196","SH.688041","SH.601881",
@@ -72,8 +72,8 @@ results = []
 quote_ctx = OpenQuoteContext(host='127.0.0.1', port=11111)
 
 # 获取所有股票的基本信息，包括名称
-ret, basic_info = quote_ctx.get_stock_basicinfo(Market.SH)  # 上海市场
-ret2, basic_info2 = quote_ctx.get_stock_basicinfo(Market.SZ)  # 深圳市场
+ret, basic_info = quote_ctx.get_stock_basicinfo(Market.SH)
+ret2, basic_info2 = quote_ctx.get_stock_basicinfo(Market.SZ)
 if ret == RET_OK and ret2 == RET_OK:
     all_basic_info = pd.concat([basic_info, basic_info2])
     stock_name_dict = dict(zip(all_basic_info['code'], all_basic_info['name']))
@@ -81,6 +81,7 @@ else:
     stock_name_dict = {}
     print("获取股票基本信息失败，将不显示股票名称")
 
+# 获取资金流数据
 for code in stock_codes:
     ret, data = quote_ctx.get_capital_flow(code, period_type=PeriodType.INTRADAY)
 
@@ -89,7 +90,7 @@ for code in stock_codes:
             last_record = data.iloc[-1]
             result = {
                 '股票代码': code,
-                '股票名称': stock_name_dict.get(code, '未知'),  # 添加股票名称，找不到时显示'未知'
+                '股票名称': stock_name_dict.get(code, '未知'),
                 '时间': last_record['capital_flow_item_time'],
                 '整体净流入(万元)': round(last_record['in_flow'] / 10000, 2)
             }
@@ -116,28 +117,35 @@ quote_ctx.close()
 
 # 创建DataFrame并保存到Excel
 df = pd.DataFrame(results)
-df = df[['股票代码', '股票名称', '时间', '整体净流入(万元)']]  # 调整列顺序
+df = df[['股票代码', '股票名称', '时间', '整体净流入(万元)']]
 df.to_excel(output_file, index=False)
 
-# 调整列宽使用openpyxl
+# 调整列宽
 wb = load_workbook(output_file)
 ws = wb.active
-
-# 设置特定列宽（单位为Excel字符宽度）
-column_widths = {
-    'A': 15,  # 股票代码
-    'B': 20,  # 股票名称
-    'C': 20,  # 时间
-    'D': 18   # 整体净流入(万元)
-}
-
+column_widths = {'A': 15, 'B': 20, 'C': 20, 'D': 18}
 for col, width in column_widths.items():
     ws.column_dimensions[col].width = width
-
 wb.save(output_file)
 
-# 打开目录和文件
-subprocess.Popen(f'explorer "{output_dir}"')
-subprocess.Popen(f'start excel "{output_file}"', shell=True)
+# 文件打开新顺序
+try:
+    # 优先打开统计文件
+    existing_file = r'E:\图片\市值300每日统计.xlsm'
+    subprocess.Popen(f'start excel "{existing_file}"', shell=True)
+    print(f"已打开基准文件: {existing_file}")
 
-print(f"数据已保存到 {output_file}")
+    # 延迟0.5秒确保顺序
+    time.sleep(0.5)
+
+    # 打开新生成文件
+    subprocess.Popen(f'start excel "{output_file}"', shell=True)
+    print(f"已生成新文件: {output_file}")
+
+    # 打开输出目录
+    subprocess.Popen(f'explorer "{output_dir}"')
+
+except Exception as e:
+    print(f"文件打开异常: {str(e)}")
+
+print(f"数据处理完成，保存路径: {output_file}")

@@ -38,31 +38,31 @@ class DateUpdater:
         """动态生成Python文件保存路径"""
         path_templates = {
             "中特估69股": [
-                r"D:\图片\中特估69资金历史记录",
+                r"E:\图片\中特估69资金历史记录",
                 r"{year}中特估69资金历史记录",
                 r"{year}年{month}月中特估69资金历史记录",
                 r"{year}年{month}月{day}日中特估69A股资金历史记录"
             ],
             "港股": [
-                r"D:\图片\港股资金历史记录",
+                r"E:\图片\港股资金历史记录",
                 r"{year}港股资金历史记录",
                 r"{year}年{month}月港股资金历史记录",
                 r"{year}年{month}月{day}日港股资金历史记录"
             ],
             "A股": [
-                r"D:\图片\A股资金历史记录",
+                r"E:\图片\A股资金历史记录",
                 r"{year}A股资金历史记录",
                 r"{year}年{month}月A股资金历史记录",
                 r"{year}年{month}月{day}日A股资金历史记录"
             ],
             "302股": [
-                r"D:\图片\市值300资金历史记录",
+                r"E:\图片\市值300资金历史记录",
                 r"{year}市值A股资金历史记录",
                 r"{year}年{month}月市值300A股资金历史记录",
                 r"{year}年{month}月{day}日市值300A股资金历史记录"
             ],
             "59个美股": [
-                r"D:\图片\美股资金历史记录",
+                r"E:\图片\美股资金历史记录",
                 r"{year}美股资金历史记录",
                 r"{year}年{month}月美股资金历史记录",
                 r"{year}年{month}月{day}日美股资金历史记录"
@@ -114,13 +114,14 @@ class DateUpdater:
 
         except Exception as e:
             print(f"处理失败 {os.path.basename(file_path)}: {str(e)}")
-
             return False
 
     def update_bat_files(self):
         """处理所有bat文件（包含新增需求）"""
         bat_files = glob(os.path.join(BAT_FILES_DIR, "*.bat"))
         for bat_path in bat_files:
+            if os.path.basename(bat_path) == "图片打开本地目录.bat":
+                continue
             try:
                 with open(bat_path, 'r', encoding='gbk') as f:
                     content = f.read()
